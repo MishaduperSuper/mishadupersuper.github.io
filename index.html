@@ -1,0 +1,741 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Misha — Projects</title>
+  <meta name="description" content="Главная страница проектов Misha на GitHub Pages." />
+  <style>
+    :root{
+      --bg0:#070A14;
+      --bg1:#0B1024;
+      --card: rgba(255,255,255,.06);
+      --card2: rgba(255,255,255,.10);
+      --stroke: rgba(255,255,255,.12);
+      --text:#EAF0FF;
+      --muted:#A9B5D6;
+      --accent:#7C5CFF;
+      --accent2:#2EE9A6;
+      --danger:#FF4D6D;
+      --shadow: 0 18px 50px rgba(0,0,0,.45);
+      --radius: 18px;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      color:var(--text);
+      background: radial-gradient(1200px 700px at 15% 10%, rgba(124,92,255,.18), transparent 60%),
+                  radial-gradient(1000px 600px at 85% 35%, rgba(46,233,166,.12), transparent 60%),
+                  linear-gradient(180deg, var(--bg0), var(--bg1));
+      overflow-x:hidden;
+    }
+
+    /* Canvas (живой фон) */
+    #stars{
+      position:fixed;
+      inset:0;
+      z-index:0;
+      pointer-events:none;
+      opacity:.85;
+    }
+
+    /* Layout */
+    .wrap{
+      position:relative;
+      z-index:1;
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 28px 18px 90px;
+    }
+
+    header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+      padding: 10px 0 18px;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      min-width: 220px;
+    }
+
+    .avatar{
+      width:44px;height:44px;border-radius:14px;
+      background: linear-gradient(135deg, rgba(124,92,255,.9), rgba(46,233,166,.7));
+      box-shadow: 0 14px 28px rgba(124,92,255,.25);
+      position:relative;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.14);
+    }
+    .avatar:after{
+      content:"";
+      position:absolute; inset:-30%;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.6), transparent 45%);
+      transform: rotate(18deg);
+    }
+
+    .brand h1{
+      font-size:16px;
+      margin:0;
+      letter-spacing:.2px;
+      line-height:1.15;
+    }
+    .brand p{
+      margin:2px 0 0;
+      color:var(--muted);
+      font-size:12.5px;
+    }
+
+    nav{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+
+    .btn{
+      appearance:none;
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.04);
+      color:var(--text);
+      padding:10px 12px;
+      border-radius: 14px;
+      cursor:pointer;
+      transition: transform .15s ease, background .15s ease, border-color .15s ease;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      user-select:none;
+      text-decoration:none;
+      font-weight:600;
+      font-size:13px;
+    }
+    .btn:hover{ transform: translateY(-1px); background: rgba(255,255,255,.07); border-color: rgba(255,255,255,.18); }
+    .btn:active{ transform: translateY(0px) scale(.98); }
+
+    .btn.primary{
+      border-color: rgba(124,92,255,.35);
+      background: linear-gradient(135deg, rgba(124,92,255,.22), rgba(46,233,166,.12));
+      box-shadow: 0 12px 28px rgba(124,92,255,.18);
+    }
+
+    /* Hero */
+    .hero{
+      margin-top: 18px;
+      padding: 26px 22px;
+      border-radius: calc(var(--radius) + 8px);
+      border: 1px solid rgba(255,255,255,.12);
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      position:relative;
+      transform-style: preserve-3d;
+    }
+    .hero:before{
+      content:"";
+      position:absolute;
+      width: 520px; height: 520px;
+      right: -260px; top:-260px;
+      background: radial-gradient(circle at 35% 35%, rgba(124,92,255,.35), transparent 55%);
+      filter: blur(2px);
+    }
+    .hero:after{
+      content:"";
+      position:absolute;
+      width: 560px; height: 560px;
+      left: -300px; bottom:-320px;
+      background: radial-gradient(circle at 45% 40%, rgba(46,233,166,.25), transparent 55%);
+      filter: blur(2px);
+    }
+
+    .hero-grid{
+      position:relative;
+      display:grid;
+      grid-template-columns: 1.25fr .75fr;
+      gap:18px;
+      align-items:center;
+    }
+    @media (max-width: 820px){
+      .hero-grid{ grid-template-columns: 1fr; }
+    }
+
+    .kicker{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding:7px 10px;
+      border-radius: 999px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.14);
+      color: var(--muted);
+      font-size: 12.5px;
+      width: fit-content;
+      margin-bottom: 12px;
+    }
+    .dot{
+      width:9px;height:9px;border-radius:50%;
+      background: var(--accent2);
+      box-shadow: 0 0 0 6px rgba(46,233,166,.15);
+    }
+
+    .headline{
+      font-size: 42px;
+      margin: 0 0 10px;
+      line-height: 1.05;
+      letter-spacing: -0.6px;
+    }
+    @media (max-width: 520px){
+      .headline{ font-size: 34px; }
+    }
+
+    .lead{
+      margin: 0 0 18px;
+      color: var(--muted);
+      font-size: 15.5px;
+      line-height: 1.55;
+      max-width: 56ch;
+    }
+
+    .hero-actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+
+    .mini{
+      margin-top: 14px;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      color: var(--muted);
+      font-size: 12.5px;
+    }
+    .chip{
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.04);
+      padding: 7px 10px;
+      border-radius: 999px;
+      display:inline-flex;
+      gap:8px;
+      align-items:center;
+    }
+    .chip b{ color: var(--text); font-weight:700; }
+
+    /* Stats card */
+    .side{
+      border-radius: var(--radius);
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.04);
+      padding: 16px;
+      box-shadow: 0 12px 28px rgba(0,0,0,.25);
+    }
+    .side h3{
+      margin:0 0 8px;
+      font-size: 14px;
+      color: var(--muted);
+      font-weight: 700;
+      letter-spacing:.25px;
+      text-transform: uppercase;
+    }
+    .stat{
+      display:flex;
+      justify-content:space-between;
+      align-items:baseline;
+      gap:12px;
+      padding: 10px 10px;
+      border-radius: 14px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.16);
+      margin-top: 10px;
+    }
+    .stat .num{
+      font-size: 22px;
+      font-weight: 900;
+      letter-spacing: -0.4px;
+    }
+    .stat .lbl{
+      color: var(--muted);
+      font-size: 12.5px;
+      text-align:right;
+    }
+    .bar{
+      height: 8px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.08);
+      overflow:hidden;
+      margin-top: 12px;
+      border:1px solid rgba(255,255,255,.10);
+    }
+    .bar > i{
+      display:block;
+      height:100%;
+      width: 0%;
+      background: linear-gradient(90deg, rgba(124,92,255,.9), rgba(46,233,166,.85));
+      border-radius:999px;
+      transition: width 900ms cubic-bezier(.2,.9,.2,1);
+    }
+
+    /* Projects */
+    section{
+      margin-top: 22px;
+    }
+    .section-title{
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap:14px;
+      margin: 18px 0 10px;
+    }
+    .section-title h2{
+      margin:0;
+      font-size: 18px;
+      letter-spacing: .2px;
+    }
+    .section-title p{
+      margin:0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 14px;
+    }
+
+    .card{
+      grid-column: span 6;
+      border-radius: var(--radius);
+      border:1px solid rgba(255,255,255,.12);
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      box-shadow: 0 12px 30px rgba(0,0,0,.25);
+      overflow:hidden;
+      position:relative;
+      transform: translateY(8px);
+      opacity:0;
+      transition: transform .35s ease, opacity .35s ease, border-color .15s ease, background .15s ease;
+    }
+    .card.show{ transform: translateY(0); opacity:1; }
+
+    .card:hover{
+      border-color: rgba(255,255,255,.18);
+      background: linear-gradient(180deg, rgba(255,255,255,.09), rgba(255,255,255,.04));
+    }
+
+    @media (max-width: 820px){
+      .card{ grid-column: span 12; }
+    }
+
+    .card-head{
+      padding: 16px 16px 0;
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:10px;
+    }
+
+    .badge{
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .2px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.14);
+      color: var(--muted);
+    }
+    .badge.green{
+      color: #BFFCE8;
+      border-color: rgba(46,233,166,.28);
+      background: rgba(46,233,166,.08);
+    }
+    .badge.purple{
+      color: #DAD3FF;
+      border-color: rgba(124,92,255,.28);
+      background: rgba(124,92,255,.08);
+    }
+
+    .card-body{
+      padding: 10px 16px 16px;
+    }
+
+    .card h3{
+      margin: 0 0 6px;
+      font-size: 18px;
+      letter-spacing: -.2px;
+    }
+    .card p{
+      margin:0 0 14px;
+      color: var(--muted);
+      line-height: 1.55;
+      font-size: 13.5px;
+    }
+
+    .card-actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    .link{
+      text-decoration:none;
+    }
+
+    .icon{
+      width:16px;height:16px;
+      display:inline-block;
+      vertical-align:-3px;
+    }
+
+    /* Footer */
+    footer{
+      margin-top: 26px;
+      padding-top: 18px;
+      border-top:1px solid rgba(255,255,255,.10);
+      color: var(--muted);
+      font-size: 13px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+
+    /* Toast */
+    .toast{
+      position: fixed;
+      left: 50%;
+      bottom: 18px;
+      transform: translateX(-50%) translateY(10px);
+      opacity:0;
+      pointer-events:none;
+      background: rgba(0,0,0,.55);
+      border:1px solid rgba(255,255,255,.14);
+      padding: 10px 12px;
+      border-radius: 14px;
+      color: var(--text);
+      box-shadow: 0 18px 40px rgba(0,0,0,.35);
+      transition: opacity .2s ease, transform .2s ease;
+      z-index: 9;
+      font-size: 13px;
+      backdrop-filter: blur(10px);
+    }
+    .toast.show{
+      opacity:1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce){
+      *{ transition:none !important; scroll-behavior:auto !important; }
+      .card{ opacity:1; transform:none; }
+      #stars{ display:none; }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="stars"></canvas>
+
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <div class="avatar" aria-hidden="true"></div>
+        <div>
+          <h1>Misha</h1>
+          <p>GitHub Pages · проекты и эксперименты</p>
+        </div>
+      </div>
+      <nav>
+        <a class="btn" href="#projects" title="К проектам">⬇️ Проекты</a>
+        <button class="btn primary" id="copySite" title="Скопировать ссылку на сайт">🔗 Скопировать сайт</button>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero" id="top">
+        <div class="hero-grid">
+          <div>
+            <div class="kicker"><span class="dot"></span> Сейчас в разработке и играх</div>
+            <h2 class="headline">Привет! Тут мои проекты ✨</h2>
+            <p class="lead">
+              Я выкладываю свои штуки на GitHub Pages. Ниже — быстрые ссылки на игры/ботов и прочие эксперименты.
+            </p>
+
+            <div class="hero-actions">
+              <a class="btn primary link" href="#projects">🚀 Открыть проекты</a>
+              <a class="btn link" href="https://github.com/mishadupersuper" target="_blank" rel="noreferrer">🐙 GitHub</a>
+            </div>
+
+            <div class="mini">
+              <span class="chip">⚡ <b>Быстро</b> грузится</span>
+              <span class="chip">🧩 <b>HTML</b> в 1 файле</span>
+              <span class="chip">🕹️ <b>Игры</b> и боты</span>
+            </div>
+          </div>
+
+          <aside class="side" aria-label="Статистика">
+            <h3>Коротко</h3>
+            <div class="stat">
+              <div class="num" id="projectsCount">2</div>
+              <div class="lbl">проект(а)<br/>на сайте</div>
+            </div>
+            <div class="stat">
+              <div class="num" id="yearNow"></div>
+              <div class="lbl">год<br/>на календаре</div>
+            </div>
+            <div class="bar" aria-hidden="true"><i id="barFill"></i></div>
+            <p style="margin:12px 2px 0;color:var(--muted);font-size:12.5px;line-height:1.45">
+              Подсказка: наведи мышкой на карточки — они “оживают”.
+            </p>
+          </aside>
+        </div>
+      </section>
+
+      <section id="projects">
+        <div class="section-title">
+          <div>
+            <h2>Проекты</h2>
+            <p>Кликабельные карточки + кнопки открыть/скопировать</p>
+          </div>
+          <button class="btn" id="shuffle" title="Случайный порядок">🎲 Перемешать</button>
+        </div>
+
+        <div class="grid" id="cards">
+          <!-- Snowball -->
+          <article class="card" data-title="Snowball Game" data-url="https://mishadupersuper.github.io/my-snowball-game/">
+            <div class="card-head">
+              <span class="badge purple">GAME</span>
+              <span class="badge">GitHub Pages</span>
+            </div>
+            <div class="card-body">
+              <h3>🎮 My Snowball Game</h3>
+              <p>Игра на страницах GitHub. Запускается прямо в браузере — без установки.</p>
+              <div class="card-actions">
+                <a class="btn primary link" href="https://mishadupersuper.github.io/my-snowball-game/" target="_blank" rel="noreferrer">▶️ Открыть</a>
+                <button class="btn" data-copy="https://mishadupersuper.github.io/my-snowball-game/">📋 Скопировать ссылку</button>
+              </div>
+            </div>
+          </article>
+
+          <!-- Beatbot -->
+          <article class="card" data-title="Beatbot" data-url="https://mishadupersuper.github.io/beatbot/">
+            <div class="card-head">
+              <span class="badge green">APP</span>
+              <span class="badge">GitHub Pages</span>
+            </div>
+            <div class="card-body">
+              <h3>🤖 Beatbot</h3>
+              <p>Проект Beatbot — зайди и посмотри, что умеет. Дальше будет больше.</p>
+              <div class="card-actions">
+                <a class="btn primary link" href="https://mishadupersuper.github.io/beatbot/" target="_blank" rel="noreferrer">▶️ Открыть</a>
+                <button class="btn" data-copy="https://mishadupersuper.github.io/beatbot/">📋 Скопировать ссылку</button>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <footer>
+        <div>© <span id="year"></span> · mishadupersuper</div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+          <a class="btn link" href="#top">⬆️ Наверх</a>
+          <button class="btn" id="toggleBG">🌌 Фон: вкл/выкл</button>
+        </div>
+      </footer>
+    </main>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    // ---- Helpers
+    const $ = (q, el=document) => el.querySelector(q);
+    const $$ = (q, el=document) => [...el.querySelectorAll(q)];
+    const toast = (msg) => {
+      const t = $("#toast");
+      t.textContent = msg;
+      t.classList.add("show");
+      clearTimeout(toast._t);
+      toast._t = setTimeout(() => t.classList.remove("show"), 1600);
+    };
+
+    // ---- Smooth scroll
+    document.addEventListener("click", (e) => {
+      const a = e.target.closest("a[href^='#']");
+      if(!a) return;
+      const id = a.getAttribute("href");
+      const el = document.querySelector(id);
+      if(el){
+        e.preventDefault();
+        el.scrollIntoView({behavior:"smooth", block:"start"});
+      }
+    });
+
+    // ---- Copy buttons
+    async function copyText(text){
+      try{
+        await navigator.clipboard.writeText(text);
+        toast("Ссылка скопирована ✅");
+      }catch{
+        // fallback
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand("copy");
+        ta.remove();
+        toast("Ссылка скопирована ✅");
+      }
+    }
+
+    $("#copySite").addEventListener("click", () => copyText(location.href.replace(/#.*$/, "")));
+    document.addEventListener("click", (e) => {
+      const btn = e.target.closest("button[data-copy]");
+      if(!btn) return;
+      copyText(btn.getAttribute("data-copy"));
+    });
+
+    // ---- Reveal on scroll
+    const cards = $$(".card");
+    const io = new IntersectionObserver((entries)=>{
+      entries.forEach(en=>{
+        if(en.isIntersecting){
+          en.target.classList.add("show");
+          io.unobserve(en.target);
+        }
+      });
+    }, {threshold: 0.12});
+    cards.forEach(c => io.observe(c));
+
+    // ---- Shuffle
+    $("#shuffle").addEventListener("click", ()=>{
+      const container = $("#cards");
+      const items = [...container.children];
+      for(let i = items.length - 1; i > 0; i--){
+        const j = Math.floor(Math.random() * (i + 1));
+        [items[i], items[j]] = [items[j], items[i]];
+      }
+      items.forEach(it => container.appendChild(it));
+      toast("Перемешал 🎲");
+    });
+
+    // ---- Year + bar fill
+    const y = new Date().getFullYear();
+    $("#year").textContent = y;
+    $("#yearNow").textContent = y;
+
+    // fake "progress" just for vibe :)
+    requestAnimationFrame(()=> {
+      $("#barFill").style.width = "78%";
+    });
+
+    // ---- Parallax tilt for hero
+    const hero = $(".hero");
+    let tiltOn = true;
+    const clamp = (n, a, b) => Math.max(a, Math.min(b, n));
+    window.addEventListener("pointermove", (e)=>{
+      if(!tiltOn) return;
+      const r = hero.getBoundingClientRect();
+      const x = (e.clientX - (r.left + r.width/2)) / (r.width/2);
+      const y = (e.clientY - (r.top + r.height/2)) / (r.height/2);
+      const rx = clamp(-y * 4, -5, 5);
+      const ry = clamp(x * 5, -6, 6);
+      hero.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg) translateZ(0)`;
+    });
+    window.addEventListener("pointerleave", ()=>{
+      hero.style.transform = "";
+    });
+
+    // ---- Starfield background
+    const canvas = document.getElementById("stars");
+    const ctx = canvas.getContext("2d");
+
+    let W, H, DPR;
+    let points = [];
+    let bgOn = true;
+
+    function resize(){
+      DPR = Math.min(2, window.devicePixelRatio || 1);
+      W = canvas.width = Math.floor(window.innerWidth * DPR);
+      H = canvas.height = Math.floor(window.innerHeight * DPR);
+      canvas.style.width = window.innerWidth + "px";
+      canvas.style.height = window.innerHeight + "px";
+      makePoints();
+    }
+
+    function makePoints(){
+      const count = Math.floor((window.innerWidth * window.innerHeight) / 14000);
+      points = Array.from({length: Math.max(60, Math.min(160, count))}, ()=>({
+        x: Math.random()*W,
+        y: Math.random()*H,
+        r: (Math.random()*1.4 + 0.4) * DPR,
+        vx: (Math.random()*0.28 + 0.05) * DPR,
+        vy: (Math.random()*0.22 + 0.04) * DPR,
+        a: Math.random()*0.55 + 0.20
+      }));
+    }
+
+    function step(){
+      if(!bgOn){
+        ctx.clearRect(0,0,W,H);
+        requestAnimationFrame(step);
+        return;
+      }
+
+      ctx.clearRect(0,0,W,H);
+
+      // points
+      for(const p of points){
+        p.x += p.vx;
+        p.y += p.vy;
+        if(p.x > W+20) p.x = -20;
+        if(p.y > H+20) p.y = -20;
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+        ctx.fillStyle = `rgba(234,240,255,${p.a})`;
+        ctx.fill();
+      }
+
+      // lines between close points
+      for(let i=0;i<points.length;i++){
+        for(let j=i+1;j<points.length;j++){
+          const a = points[i], b = points[j];
+          const dx = a.x-b.x, dy=a.y-b.y;
+          const dist = Math.sqrt(dx*dx+dy*dy);
+          if(dist < 140*DPR){
+            const alpha = (1 - dist/(140*DPR)) * 0.16;
+            ctx.strokeStyle = `rgba(124,92,255,${alpha})`;
+            ctx.lineWidth = 1*DPR;
+            ctx.beginPath();
+            ctx.moveTo(a.x,a.y);
+            ctx.lineTo(b.x,b.y);
+            ctx.stroke();
+          }
+        }
+      }
+
+      requestAnimationFrame(step);
+    }
+
+    window.addEventListener("resize", resize);
+
+    $("#toggleBG").addEventListener("click", ()=>{
+      bgOn = !bgOn;
+      toast(bgOn ? "Фон включен 🌌" : "Фон выключен 📴");
+    });
+
+    resize();
+    step();
+  </script>
+</body>
+</html>
